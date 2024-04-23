@@ -3,5 +3,6 @@ public class Main {
         Hangman hangman = new Hangman();
         HangmanConsole hangmanConsole = new HangmanConsole(hangman);
         hangmanConsole.run();
+
     }
 }
