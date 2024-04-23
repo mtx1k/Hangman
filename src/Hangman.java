@@ -1,61 +1,55 @@
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Hangman implements Runnable {
+public class Hangman {
     private final ArrayList<Character> mistakes;
     private final ArrayList<Character> letters;
     private final String secretWord;
     private String gameProgress;
+    private int lives;
+
+    public int getLives() {
+        return lives;
+    }
+
+    public ArrayList<Character> getMistakes() {
+        return mistakes;
+    }
+
+    public String getSecretWord() {
+        return secretWord;
+    }
+
+    public String getGameProgress() {
+        return gameProgress;
+    }
+
+    public void addInputtedLetter(char letter) {
+        letters.add(letter);
+    }
 
     public Hangman() {
         this.secretWord = Words.getRandomWord().toString();
         this.gameProgress = generateStartGameProgress();
         this.mistakes = new ArrayList<>();
         this.letters = new ArrayList<>();
+        this.lives = 6;
     }
 
-    @Override
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
-        int counter = 0;
-        while (counter != 6) {
-            System.out.print("Enter a letter: ");
-            char letter = scanner.next().toUpperCase().charAt(0);
-            if (letters.contains(letter)) {
-                System.out.println("This letter has already been!");
-                continue;
-            }
-            letters.add(letter);
-            if(!generateGameProgress(letter)) {
-                counter++;
-            }
-            if (secretWord.equals(gameProgress)) {
-                System.out.println("Congratulation!");
-                System.out.println(gameProgress + " is correct (" + secretWord + ")");
-                return;
-            }
-            menu(letter);
-        }
-        System.out.println("GAME OVER!");
+    public boolean isExist(char letter) {
+        return letters.contains(letter);
     }
-    private void menu(char letter) {
-        System.out.println("Word: " + gameProgress);
-        System.out.println("Mistakes: " + mistakes);
-        System.out.println("Letter: " + letter);
-        printHangman(mistakes.size());
-
-    }
-    private boolean generateGameProgress(char replacement) {
+    public boolean generateGameProgress(char letter) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < secretWord.length(); i++) {
-            if (secretWord.charAt(i) == replacement) {
-                stringBuilder.append(replacement);
+            if (secretWord.charAt(i) == letter) {
+                stringBuilder.append(letter);
                 continue;
             }
             stringBuilder.append(gameProgress.charAt(i));
         }
         if (gameProgress.contentEquals(stringBuilder)) {
-            mistakes.add(replacement);
+            mistakes.add(letter);
+            lives--;
             return false;
         }
         gameProgress = stringBuilder.toString();
@@ -63,71 +57,5 @@ public class Hangman implements Runnable {
     }
     private String generateStartGameProgress() {
         return "_".repeat(secretWord.length());
-    }
-    private void printHangman(int trys) {
-        switch (trys) {
-            case 0:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("         |");
-                System.out.println("         |");
-                System.out.println("         |");
-                System.out.println("         |");
-                System.out.println("_________|___");
-                break;
-            case 1:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("    O    |");
-                System.out.println("         |");
-                System.out.println("         |");
-                System.out.println("         |");
-                System.out.println("_________|___");
-                break;
-            case 2:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("    O    |");
-                System.out.println("    |    |");
-                System.out.println("    |    |");
-                System.out.println("         |");
-                System.out.println("_________|___");
-                break;
-            case 3:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("    O    |");
-                System.out.println("  --|    |");
-                System.out.println("    |    |");
-                System.out.println("         |");
-                System.out.println("_________|___");
-                break;
-            case 4:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("    O    |");
-                System.out.println("  --|--  |");
-                System.out.println("    |    |");
-                System.out.println("         |");
-                System.out.println("_________|___");
-                break;
-            case 5:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("    O    |");
-                System.out.println("  --|--  |");
-                System.out.println("    |    |");
-                System.out.println("   /     |");
-                System.out.println("_________|___");
-                break;
-            case 6:
-                System.out.println("    |----|");
-                System.out.println("    |    |");
-                System.out.println("   (X)   |");
-                System.out.println("  --|--  |");
-                System.out.println("    |    |");
-                System.out.println("   / \\   |");
-                System.out.println("_________|___");
-        }
     }
 }
